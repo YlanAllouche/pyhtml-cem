@@ -41,11 +41,11 @@ class tree_item(Tag):
             'disabled': disabled,
             'lazy': lazy,
         })
-        # Filter out None values and convert numbers to strings
+        # Filter out None values and False booleans, convert numbers to strings
         attributes = {
-            k: str(v) if isinstance(v, (int, float)) else v
+            k: str(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else v
             for k, v in attributes.items()
-            if v is not None
+            if v is not None and v is not False
         }
         super().__init__(*children, **attributes)
 
