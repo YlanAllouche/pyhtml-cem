@@ -6,6 +6,12 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class carousel_item(Tag):
+    """
+    wa-carousel-item web component.
+
+    Slots:
+        : The carousel item's content..
+    """
     def __init__(
         self,
         *children: ChildrenType,

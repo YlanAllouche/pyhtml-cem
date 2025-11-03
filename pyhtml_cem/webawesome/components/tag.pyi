@@ -6,6 +6,21 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class tag(Tag):
+    """
+    wa-tag web component.
+
+    Args:
+        *children: Child elements and text content
+        variant: The tag's theme variant. Defaults to `neutral` if not within another element with a variant.
+        appearance: The tag's visual appearance.
+        size: The tag's size.
+        pill: Draws a pill-style tag with rounded edges.
+        with_remove: Makes the tag removable and shows a remove button.
+        **attributes: Additional HTML attributes
+
+    Slots:
+        : The tag's content.
+    """
     def __init__(
         self,
         *children: ChildrenType,

@@ -6,6 +6,16 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class format_bytes(Tag):
+    """
+    wa-format-bytes web component.
+
+    Args:
+        *children: Child elements and text content
+        value: The number to format in bytes.
+        unit: The type of unit to display.
+        display: Determines how to display the result, e.g. "100 bytes", "100 b", or "100b".
+        **attributes: Additional HTML attributes
+    """
     def __init__(
         self,
         *children: ChildrenType,

@@ -6,6 +6,19 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class scroller(Tag):
+    """
+    wa-scroller web component.
+
+    Args:
+        *children: Child elements and text content
+        orientation: The scroller's orientation.
+        without_scrollbar: Removes the visible scrollbar.
+        without_shadow: Removes the shadows.
+        **attributes: Additional HTML attributes
+
+    Slots:
+        : The content to show inside the scroller.
+    """
     def __init__(
         self,
         *children: ChildrenType,

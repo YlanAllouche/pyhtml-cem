@@ -6,6 +6,14 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class skeleton(Tag):
+    """
+    wa-skeleton web component.
+
+    Args:
+        *children: Child elements and text content
+        effect: Determines which effect the skeleton will use.
+        **attributes: Additional HTML attributes
+    """
     def __init__(
         self,
         *children: ChildrenType,

@@ -6,6 +6,20 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class badge(Tag):
+    """
+    wa-badge web component.
+
+    Args:
+        *children: Child elements and text content
+        variant: The badge's theme variant. Defaults to `brand` if not within another element with a variant.
+        appearance: The badge's visual appearance.
+        pill: Draws a pill-style badge with rounded edges.
+        attention: Adds an animation to draw attention to the badge.
+        **attributes: Additional HTML attributes
+
+    Slots:
+        : The badge's content.
+    """
     def __init__(
         self,
         *children: ChildrenType,

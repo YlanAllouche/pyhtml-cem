@@ -408,13 +408,14 @@ def generate_components_init(
     return "\n".join(output)
 
 
-def generate_stub_file(comp: dict[str, Any], prefix_to_strip: str = "") -> str:
+def generate_stub_file(comp: dict[str, Any], prefix_to_strip: str = "", include_slots: bool = False) -> str:
     """
     Generate a .pyi stub file for a component.
 
     Args:
         comp: Component metadata dictionary
         prefix_to_strip: Optional prefix to strip from component class names
+        include_slots: If True, include slot information in docstring
 
     Returns:
         Complete .pyi stub file content
@@ -426,6 +427,8 @@ def generate_stub_file(comp: dict[str, Any], prefix_to_strip: str = "") -> str:
         class_name = class_name[len(prefix_to_strip) + 1 :]
 
     attributes = comp.get("attributes", [])
+    description = escape_docstring(comp.get("description", "").strip())
+    slots = comp.get("slots", []) if include_slots else []
 
     output = []
     output.append(f'"""Type stub for {tag_name} component."""')
@@ -436,6 +439,55 @@ def generate_stub_file(comp: dict[str, Any], prefix_to_strip: str = "") -> str:
     output.append("")
     output.append("")
     output.append(f"class {class_name}(Tag):")
+
+    # Build docstring in Google style (same as in generate_component_class)
+    docstring_lines = []
+
+    if description:
+        docstring_lines.append(description)
+    else:
+        docstring_lines.append(f"{tag_name} web component.")
+
+    if attributes:
+        docstring_lines.append("")
+        docstring_lines.append("Args:")
+        docstring_lines.append("    *children: Child elements and text content")
+
+        for attr in attributes:
+            attr_name = attr["name"]
+            py_attr_name = sanitize_attr_name(attr_name)
+            attr_desc = escape_docstring(attr.get("description", ""))
+            attr_type = attr.get("type", {}).get("text", "")
+
+            if attr_desc:
+                # Wrap long descriptions
+                desc_lines = attr_desc.split("\n")
+                docstring_lines.append(f"    {py_attr_name}: {desc_lines[0]}")
+                for line in desc_lines[1:]:
+                    if line.strip():
+                        docstring_lines.append(f"        {line.strip()}")
+            elif attr_type:
+                docstring_lines.append(f"    {py_attr_name}: Type: {attr_type}")
+            else:
+                docstring_lines.append(f"    {py_attr_name}: No description available")
+
+        docstring_lines.append("    **attributes: Additional HTML attributes")
+
+    if slots:
+        docstring_lines.append("")
+        docstring_lines.append("Slots:")
+        for slot in slots:
+            slot_name = slot.get("name", "default")
+            slot_desc = escape_docstring(slot.get("description", ""))
+            if slot_desc:
+                docstring_lines.append(f"    {slot_name}: {slot_desc}")
+
+    # Add docstring to output
+    docstring = '    """\n'
+    for line in docstring_lines:
+        docstring += f"    {line}\n" if line else "\n"
+    docstring += '    """'
+    output.append(docstring)
 
     # Build __init__ signature
     init_params = ["self", "*children: ChildrenType"]
@@ -511,10 +563,7 @@ def generate_main_init_stub(
     output = []
     output.append('"""Type stubs for lazy-loaded components."""')
     output.append("")
-    output.append("from typing import TYPE_CHECKING")
-    output.append("")
-    output.append("if TYPE_CHECKING:")
-    output.append("    from .components import (")
+    output.append("from .components import (")
 
     for comp in components:
         tag_name = comp["tag"]
@@ -526,10 +575,9 @@ def generate_main_init_stub(
         else:
             class_name = full_class_name
 
-        output.append(f"        {class_name},")
+        output.append(f"    {class_name} as {class_name},")
 
-    output.append("    )")
-    output.append("")
+    output.append(")")
     output.append("")
     output.append("__all__: list[str]")
 
@@ -588,7 +636,7 @@ def generate_component_code(
         file_path.write_text(content)
         file_map[class_name] = file_path
 
-        stub_content = generate_stub_file(comp, prefix_to_strip=prefix_to_strip)
+        stub_content = generate_stub_file(comp, prefix_to_strip=prefix_to_strip, include_slots=include_slots)
         stub_path = components_dir / f"{module_name}.pyi"
         stub_path.write_text(stub_content)
 

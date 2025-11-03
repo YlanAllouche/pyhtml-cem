@@ -6,6 +6,18 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class include(Tag):
+    """
+    wa-include web component.
+
+    Args:
+        *children: Child elements and text content
+        src: The location of the HTML file to include. Be sure you trust the content you are including as it will be executed as
+            code and can result in XSS attacks.
+        mode: The fetch mode to use.
+        allow_scripts: Allows included scripts to be executed. Be sure you trust the content you are including as it will be executed as
+            code and can result in XSS attacks.
+        **attributes: Additional HTML attributes
+    """
     def __init__(
         self,
         *children: ChildrenType,

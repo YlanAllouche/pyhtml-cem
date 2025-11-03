@@ -6,6 +6,17 @@ from pyhtml.__types import ChildrenType, AttributeType
 
 
 class resize_observer(Tag):
+    """
+    wa-resize-observer web component.
+
+    Args:
+        *children: Child elements and text content
+        disabled: Disables the observer.
+        **attributes: Additional HTML attributes
+
+    Slots:
+        : One or more elements to watch for resizing.
+    """
     def __init__(
         self,
         *children: ChildrenType,
