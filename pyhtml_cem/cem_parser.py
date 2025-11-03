@@ -264,11 +264,11 @@ def generate_component_class(
     for py_name, _ in attr_updates:
         lines.append(f"            '{py_name}': {py_name},")
     lines.append("        })")
-    lines.append("        # Filter out None values and convert numbers to strings")
+    lines.append("        # Filter out None values and False booleans, convert numbers to strings")
     lines.append("        attributes = {")
-    lines.append("            k: str(v) if isinstance(v, (int, float)) else v")
+    lines.append("            k: str(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else v")
     lines.append("            for k, v in attributes.items()")
-    lines.append("            if v is not None")
+    lines.append("            if v is not None and v is not False")
     lines.append("        }")
     lines.append("        super().__init__(*children, **attributes)")
 
