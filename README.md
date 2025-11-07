@@ -2,7 +2,6 @@
 
 Generic **Custom Elements Manifest (CEM)** parser and pre-generated component libraries for PyHTML.
 
-
 ## Installation
 
 ```bash
